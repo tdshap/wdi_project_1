@@ -1,0 +1,15 @@
+<html>
+<head>
+	<title>Weather</title>
+</head>
+<body>
+
+Weather for <b><%= weather["city"].tr("_", " ") %>, <%= weather["state"]%></b><br>
+<img src="<%= weather['icon_url']%>"><br>
+<%= weather["temp_f"] %> F. Feels like <%= weather["feelslike_f"] %> F<br>
+<%= weather["weather"] %><br>
+
+
+
+</body>
+</html>

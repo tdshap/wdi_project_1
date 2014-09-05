@@ -1,0 +1,38 @@
+<html>
+<head>
+	<title>Edit Your Weather Preferences</title>
+</head>
+<body>
+<h1>Edit Your Weather Preferences</h1>
+
+<h3>Update your Search Cities</h3>
+
+	<form method="POST" action="/search/weather">
+	<input type="hidden" name="_method" value="PUT">
+	
+	<select name="search_city">
+    <% search.each do |a| %>
+      <option value="<%= a.id %>"><%= a["city"].tr("_", " ") %>, <%= a["state"]%></option>
+    <% end %>
+ 	</select><br>
+
+ 	Update city: <input type="text" name="city"><br>
+ 	Update state:<input type="text" name="state">
+ 	<button>Update City</button><br>*All fields required
+</form><br><br>
+
+<h3>Delete Search</h3>
+	<form method="POST" action="/search/weather">
+	<input type="hidden" name="_method" value="DELETE">
+
+	<select name="search_city">
+    <% search.each do |a| %>
+      <option value="<%= a.id %>"><%= a["city"].tr("_", " ") %>, <%= a["state"]%></option>
+    <% end %>
+ 	</select>
+ 	<button>Delete City</button>
+</form>
+
+
+</body>
+</html>
