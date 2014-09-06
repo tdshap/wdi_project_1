@@ -5,6 +5,19 @@
 <body>
 
 <h1>Your NYTimes Articles</h1>
+<p>
+<% news.each do |a| %>
+<h3><%= a["headline"] %></h3><br>
+
+<img src="<%= a['image'] %>">
+<%= a["snippet"] %><br>
+<a href="/NYT/<%=a["id"]%>">See more here</a>
+<a href="<%= a['web_url']%>">Read full article</a><br>
+<% end %>
+</p>
+
+
+
 
 <div class="links">
 <a href="/NYT/add_search">Add NYTimes Search</a>

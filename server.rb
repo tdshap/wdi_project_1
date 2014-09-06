@@ -76,7 +76,7 @@ end
 delete('/search/weather') do #deleting a weather search
 	city = WeatherConditionSearch.find_by(id: params["search_city"])
 	city.destroy
-	redirect "/"
+	redirect "/refresh/weather"
 end 
 
 get('/refresh/weather') do #deletes and re-creates WeatherConditionResponses using WeatherConditionSearch
@@ -94,45 +94,79 @@ end
 # NYTIMES ROUTES
 
 get('/NYT') do #displays NYT articles 
-	erb(:NYTimes)
+	erb(:NYTimes, {locals: { news: NytimesResponse.all }})
 end 
 
 get('/NYT/add_search') do #form to add new search words
  erb(:NYTimes_new_search_term)
 end 
 
-post('/NYT') do 
-	search_term = params["search_term"].tr(" ", "+")
-	NytimesSearch.create({search_term: search_term})
-	response = HTTParty.get("http://api.nytimes.com/svc/search/v2/articlesearch.json?q=#{search_term}&sort=newest&api-key=a96b439050b304551ed93ba9a87f929c:1:69763820")
-binding.pry
 
-search = NytimesSearch.find_by(search_term: search_term)
+def retrieve_NYT(search_term)
+	#quering NYTimes API
+	response = HTTParty.get("http://api.nytimes.com/svc/search/v2/articlesearch.json?q=#{search_term}&sort=newest&api-key=a96b439050b304551ed93ba9a87f929c:1:69763820")
+	#creating search results with NYTimes JSON (if statement to handel empty ["multimedia"] hash)
+	search = NytimesSearch.find_by(search_term: search_term)
 	response["response"]["docs"].each do |a|
-		NytimesResponse.create({
-			nytimes_searches_id: search.id, 
-			web_url: a["web_url"],
-			snippet: a["snippet"],
-			image: "www.nytimes.com#{a['multimedia'][0]['url']}",
-			pub_date: a["pub_date"],
-			headline: a["headline"]["main"]
-		})
+		if a['multimedia'] == []
+			NytimesResponse.create({
+				nytimes_searches_id: search.id, 
+				web_url: a["web_url"],
+				snippet: a["snippet"],
+				image: "http://img.talkandroid.com/uploads/2011/03/nytimes-icon.jpg",
+				pub_date: a["pub_date"],
+				headline: a["headline"]["main"]
+				})
+		else
+			NytimesResponse.create({
+				nytimes_searches_id: search.id, 
+				web_url: a["web_url"],
+				snippet: a["snippet"],
+				image: "https://www.nytimes.com/#{a['multimedia'][0]['url']}",
+				pub_date: a["pub_date"],
+				headline: a["headline"]["main"]
+				})
+		end
 	end 
+end 
+
+post('/NYT') do  # queries NYTimes API with new search terms
+	search_term = params["search_term"].tr(" ", "+")
+	retrieve_NYT(search_term)
+
 	redirect ("/NYT")
 end 
 
-get('/edit/NYT') do 
-
+get("/NYT/:id") do # individual article page
+	article = NytimesResponse.find_by(id: params["id"])
+	erb(:NYT_post, {locals: { article: article }})
 end 
 
-get("refresh/NYT") do 
+get('/edit/NYT') do # edit search preferences
+	erb(:NYTimes_preferences, {locals: { terms: NytimesSearch.all }})
+end 
 
+put('/search/NYT') do #updates NYTimes search terms
+	new_search = NytimesSearch.find_by(id: params["search_id"])
+	new_search.update(search_term: params["new_search_term"])
+	redirect('/refresh/NYT')
 end 
 
 
+delete('/search/NYT') do #deletes NYTimes search terms 
+	delete_search = NytimesSearch.find_by(id: params["search_id"])
+	delete_search.destroy
+	redirect('/refresh/NYT')
+end 
 
-
-
+get('/refresh/NYT') do #deletes posts in NytimesResponse db. Re-queries NYTimes API with updates searches
+	NytimesResponse.delete_all
+	NytimesSearch.all.each do |a|
+		search_term = a["search_term"]
+		retrieve_NYT(search_term)
+	end 
+	redirect('/NYT')
+end 
 
 
 

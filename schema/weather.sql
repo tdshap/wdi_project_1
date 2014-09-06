@@ -21,3 +21,6 @@ CREATE TABLE weather_condition_responses(
 	id serial primary id, 
 	);
 
+
+
+

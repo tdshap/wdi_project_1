@@ -1,0 +1,38 @@
+<html>
+<head>
+	<title>NYTimes Search Preferences</title>
+</head>
+<body>
+<h1>Update your NYTimes Searches</h1>
+<p>
+
+<form method="POST" action="/search/NYT">
+<input type="hidden" name="_method" value="PUT">
+
+<select name="search_id">
+    <% terms.each do |a| %>
+      <option value="<%= a["id"] %>"><%= a["search_term"] %></option>
+    <% end %>
+ 	</select><br>
+ 	update to: <input type="text" name="new_search_term">
+ 	<button>Update Search Term</button>
+ </form>
+
+
+
+<form method="POST" action="/search/NYT">
+	<input type="hidden" name="_method" value="DELETE">
+	<select name="search_id">
+    <% terms.each do |a| %>
+      <option value="<%= a["id"] %>"><%= a["search_term"] %></option>
+    <% end %>
+  </select>
+  <button>Delete Search</button>
+</form>
+
+</p>
+
+
+
+</body>
+</html>
