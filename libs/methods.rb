@@ -14,3 +14,9 @@ end
 class NytimesResponse <ActiveRecord::Base
 end 
 
+class TwitterSearch < ActiveRecord::Base
+end 
+
+class TwitterResponse < ActiveRecord::Base
+end 
+

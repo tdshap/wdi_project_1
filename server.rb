@@ -4,6 +4,9 @@ require_relative './libs/connection'
 require_relative './libs/methods'
 require 'httparty'
 require 'pry'
+set :server, 'webrick'
+require 'twitter'
+
 
 after do #closes ActiveRecord connection
   ActiveRecord::Base.connection.close
@@ -166,6 +169,39 @@ get('/refresh/NYT') do #deletes posts in NytimesResponse db. Re-queries NYTimes 
 		retrieve_NYT(search_term)
 	end 
 	redirect('/NYT')
+end 
+
+
+#TWITTER ROUTES
+
+get('/twitter') do #displays all twitter results
+	erb(:twitter)
+end 
+
+get('/twitter/add_search') do # form to add new twitter searches
+
+	erb(:twitter_new_search_term)
+end 
+
+post('/twitter') do 
+	client = Twitter::REST::Client.new do |config|
+	  config.consumer_key = "YuXQGZhXW5HVPyPyR430qQGeZ"
+	  config.consumer_secret = "c4hpTZbFOpuachYZIqSznJdQVa46jOm3SwnuuV8xztRdwJIxB2"
+	  config.access_token = "280633349-Cl1pvueTkyCaHBueOVjRF9nZxX4MTnoodQRWuuXI"
+	  config.access_token_secret = "7B10uDNzeTQFZ8UpY8HQfX8eEyqY3xbtAOnC8eSfTlszA"
+	end	
+
+	search_term = params["search_term"]
+	TwitterSearch.create({search_term: search_term})
+
+	twitter_response = client.search("#{search_term}", :result_type => "recent").take(10)
+
+	twitter_response.each do |a|
+		TwitterResponse.create({
+		created_at: a.created_at, 
+		full_text: a.full_text, 
+		user: a.user.screen_name,
+		})
 end 
 
 
