@@ -1,3 +1,7 @@
+require 'rubygems'
+require 'bundler/setup'
+Bundler.require(:default)
+
 require 'sinatra'
 require 'sinatra/reloader'
 require_relative './libs/connection'
@@ -71,6 +75,14 @@ get('/refresh/weather') do #deletes and re-creates WeatherConditionResponse usin
 		state = a["state"]
 		retrieve_weather(city, state)
 	end 
+
+	Weather10dayResponse.delete_all
+	WeatherConditionSearch.all.each do |a|
+		city = a["city"]
+		state = a["state"]
+		retrieve_10day_forecast(city, state)
+	end 
+	
 	redirect('/weather')
 end 
 
