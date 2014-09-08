@@ -33,6 +33,17 @@
  	<button>Delete City</button>
 </form>
 
+<h3>Add a Tag to a post<h3>
+	<form method="POST" action="/tag/weather">
+		<select name="id">
+			<% response.each do |a| %>
+			<option  value="<%=a['id'] %>"><%=a["city"].tr("_", " ") %></option>
+			<% end %>
+		</select>
+		<input type="text" name="tag">
+	</form>
+
+
 
 </body>
 </html>

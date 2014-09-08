@@ -1,0 +1,47 @@
+<html>
+<head>
+	<title>Edit Your twitter preferences</title>
+</head>
+<body>
+
+<h3>Update your Twitter Search</h3>
+
+	<form method="POST" action="/search/twitter">
+	<input type="hidden" name="_method" value="PUT">
+	
+	<select name="old_search">
+    <% search.each do |a| %>
+      <option value="<%= a["id"] %>"><%= a["search_term"] %></option>
+    <% end %>
+ 	</select><br>
+
+ 	Update search term: <input type="text" name="new_search"><br>
+ 	<button>Update Search</button><br>
+</form><br><br>
+
+<h3>Delete Search</h3>
+	<form method="POST" action="/search/twitter">
+	<input type="hidden" name="_method" value="DELETE">
+
+	<select name="search_term">
+    <% search.each do |a| %>
+      <option value="<%= a.id %>"><%= a["search_term"] %></option>
+    <% end %>
+ 	</select>
+ 	<button>Delete Search</button>
+</form>
+
+
+<h3>Add a Tag to a post<h3>
+	<form method="POST" action="/tag/twitter">
+		<select name="id">
+			<% response.each do |a| %>
+			<option  value="<%=a['id'] %>"><%= a["screen_name"] %></option>
+			<% end %>
+		</select>
+		<input type="text" name="tag">
+	</form>
+
+
+</body>
+</html>

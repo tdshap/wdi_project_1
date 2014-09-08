@@ -1,7 +1,7 @@
 <html>
 <head>
 	<title>Your Dashboard</title>
-	<!-- <link rel="stylesheet" type="text/css" href="stylesheet.css"> -->
+	<link rel="stylesheet" type="text/css" href="stylesheet.css">
 </head>
 <body>
 	<h1> Welcome to your Dashboard</h1>
@@ -12,11 +12,42 @@
 	</div>
 			
 			<br><br>
-			<a href="/weather">View your weather</a>
-			<a href="/NYT">View your articles</a>
-			<a href="/twitter">View Twitter</a>
+		<h1>View your twitter posts</h1>
+
+		<% twitter.take(10).each do |a| %>
+		<div class="twitter">
+			<b><%= a["screen_name"] %></b>: <p><%= a["full_text"] %><p>
+		</div>
+		<% end %>
+	
+	<h1>Your NYTimes Articles</h1>
+	<div class="NYTimes_feed"
+	<% news.take(10).each do |a| %>
+		<div class="articles">
+			<b><a href="<%= a['web_url']%>"><%= a["headline"] %></a></b>
+			<br>
+			<%= a["snippet"] %>
+			<br>
+			<img src="<%= a['image'] %>">
+			<br>
+			<a href="/NYT/<%=a["id"]%>">See more here</a>
+			<br>
+		</div>
+	<% end %>
+	</div>
 
 
+<div class="current_conditions">
+<% weather.take(10).each do |a| %>
+	
+		Weather for <b><%= a["city"].tr("_", " ") %>, <%= a["state"]%></b><br>
+		<img src="<%= a['icon_url']%>"><br>
+		<%= a["temp_f"] %> F. Feels like <%= a["feelslike_f"] %> F<br>
+		<%= a["weather"] %><br>
+	<a href="weather/<%= a["id"] %>">See more</a>
+
+<br><br>
+<% end %>
 </body>
 </html>
 

@@ -39,8 +39,20 @@ div {
   	border: solid;
   	padding: (10px, 10px, 10px, 10px);
   }
-p{
+  .twitter{
+    word-wrap: break-word;
+    height: auto;
+    width: 200px;
+    border: solid;
+    display: inline-block;
+    
 
+
+
+
+  }
+p{
+  color: #7766E3;
 }
 
 h3{

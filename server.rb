@@ -13,7 +13,7 @@ after do #closes ActiveRecord connection
 end
 
 get('/') do # main feed
-	erb(:index)
+	erb(:index, locals: { twitter: TwitterResponse.all, news: NytimesResponse.all, weather: WeatherConditionResponse.all })
 end 
 
 #WEATHER ROUTES
@@ -64,7 +64,7 @@ delete('/search/weather') do #deleting a weather search
 	redirect "/refresh/weather"
 end 
 
-get('/refresh/weather') do #deletes and re-creates WeatherConditionResponses using WeatherConditionSearch
+get('/refresh/weather') do #deletes and re-creates WeatherConditionResponse using WeatherConditionSearch
 	WeatherConditionResponse.delete_all
 	WeatherConditionSearch.all.each do |a|
 		city = a["city"]
@@ -74,7 +74,12 @@ get('/refresh/weather') do #deletes and re-creates WeatherConditionResponses usi
 	redirect('/weather')
 end 
 
+post('/tag/weather') do
+	post_tag = WeatherConditionResponse.find_by({id: params["id"]})
+	new_tag = params["tag"]
+	post_tag.update({tags: new_tag})
 
+end 
 
 # NYTIMES ROUTES
 
@@ -136,27 +141,7 @@ get('/twitter/add_search') do # form to add new twitter searches
 	erb(:twitter_new_search_term)
 end 
 
-post('/twitter') do 
-binding.pry
-	configure_twitter
-
-	search_term = params["search_term"]
-	TwitterSearch.create({search_term: search_term})
-
-	twitter_response = client.search("#{search_term}", :result_type => "recent", :lang => "en").take(10)
-	#to go beyond MVP, handle media & hashtags
-
-	twitter_response.each do |a|
-		TwitterResponse.create({
-		created_at: a.created_at, 
-		full_text: a.full_text, 
-		screen_name: a.user.screen_name,
-		});
-	end 
-	redirect('/twitter')
-end
-
-post("/follow/twitter") do 
+post('/twitter') do #queries twitter API
 	client = Twitter::REST::Client.new do |config|
 		  config.consumer_key = "YuXQGZhXW5HVPyPyR430qQGeZ"
 		  config.consumer_secret = "c4hpTZbFOpuachYZIqSznJdQVa46jOm3SwnuuV8xztRdwJIxB2"
@@ -164,17 +149,84 @@ post("/follow/twitter") do
 		  config.access_token_secret = "7B10uDNzeTQFZ8UpY8HQfX8eEyqY3xbtAOnC8eSfTlszA"
 	end	
 
-	username = params["handle"]
-	TwitterUserSearch.create({follow_user: username})
-	#need to make twitter_user_searches & responses tables
-	twitter_response = client.user("#{username}")
+	search_term = params["search_term"]
+	TwitterSearch.create({search_term: search_term})
+
+	twitter_response = client.search("#{search_term}", :result_type => "recent", :lang => "en").take(10)
+	#to go beyond MVP, handle media & hashtags
 	
-	TwitterUserResponse.create({
-		tweet: twitter_response.tweet.full_text,
-		unparsed_url: twitter_response.tweet.url,
-
-
-	})
-end 
+	tweet = TwitterSearch.find_by({search_term: search_term})
+	#creates posts based on twitter search
+	twitter_response.each do |a| 
+		TwitterResponse.create({
+		twitter_search_id: tweet.id,
+		created_at: a.created_at, 
+		full_text: a.full_text, 
+		screen_name: a.user.screen_name,
+		});
+	end 
+	redirect('/twitter')
+end
 #delete and update routes, twitter/:id, all erb files, displaying info on main twitter page. 
+
+
+get("/edit/twitter") do 
+	erb(:twitter_preferences, {locals: { search: TwitterSearch.all, response: TwitterResponse.all }})
+end 
+
+
+
+post('/tag/twitter') do #create tag for post
+
+	post_tag = TwitterResponse.find_by({id: params["id"]})
+	new_tag = params["tag"]
+	post_tag.update({tag: new_tag})
+	redirect("/twitter")
+end 
+
+put("/search/twitter") do #edit search term 
+	new_search = TwitterSearch.find_by(id: params["old_search"])
+	new_search.update(search_term: params["new_search"])
+	redirect("/refresh/twitter")
+
+end 
+
+
+delete("/search/twitter") do #delete search term
+
+	delete_search = TwitterSearch.find_by(id: params["search_term"])
+	delete_search.destroy
+	redirect ('/refresh/twitter') #eventually refresh/twitter
+
+end 
+
+
+get('/refresh/twitter') do 
+	client = Twitter::REST::Client.new do |config|
+		  config.consumer_key = "YuXQGZhXW5HVPyPyR430qQGeZ"
+		  config.consumer_secret = "c4hpTZbFOpuachYZIqSznJdQVa46jOm3SwnuuV8xztRdwJIxB2"
+		  config.access_token = "280633349-Cl1pvueTkyCaHBueOVjRF9nZxX4MTnoodQRWuuXI"
+		  config.access_token_secret = "7B10uDNzeTQFZ8UpY8HQfX8eEyqY3xbtAOnC8eSfTlszA"
+	end	
+	
+	TwitterResponse.delete_all
+	TwitterSearch.all.each do |a|
+		search_term = a["search_term"]
+		twitter_response = client.search("#{search_term}", :result_type => "recent", :lang => "en").take(5)
+		twitter_response.each do |b| 
+			TwitterResponse.create({
+			twitter_search_id: a.id,
+			created_at: b.created_at, 
+			full_text: b.full_text, 
+			screen_name: b.user.screen_name,
+			});
+		end 
+	end 
+	redirect('/twitter')
+end 
+
+
+
+
+
 
