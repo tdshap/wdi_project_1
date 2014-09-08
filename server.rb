@@ -22,26 +22,6 @@ get('/weather/add_location') do #page to add locations to search
 	erb(:weather_new_location)
 end 
 
-def retrieve_weather(city, state)
-	#querying wunderground API 
-	response = HTTParty.get("http://api.wunderground.com/api/d8beaac28d7f691e/conditions/q/#{state}/#{city}.json")
-	
-	search = WeatherConditionSearch.find_by(city: city)
-	
-	#adding results Weather_Condition_Searches table
-	WeatherConditionResponse.create({
-		weather_condition_searches_id: search.id,
-		city: city,
-		state: response["current_observation"]["display_location"]["state"],
-		country: response["current_observation"]["display_location"]["country"],
-		weather: response["current_observation"]["weather"],
-		temp_f: response["current_observation"]["temp_f"],
-		feelslike_f: response["current_observation"]["feelslike_f"],
-		icon_url: response["current_observation"]["icon_url"],
-		forecast_url: response["current_observation"]["forecast_url"]  
-	})
-end
-
 post('/weather') do #creating a new weather search (condition)
 	#format params: state, city
 	city = params["city"].tr(' ', '_')
@@ -50,11 +30,13 @@ post('/weather') do #creating a new weather search (condition)
 	#save search to database
 	WeatherConditionSearch.create({city: city, state: state})
 	retrieve_weather(city, state)
+	retrieve_10day_forecast(city, state)
 	redirect'/weather'
 end 
 
 get('/weather') do #display weather feed for all cities
-	erb(:all_weather, {locals: { weather: WeatherConditionResponse.all }})
+
+	erb(:all_weather, {locals: { weather: WeatherConditionResponse.all, ten_day: Weather10dayResponse.all }})
 end 
 
 get("/weather/:id") do #displays weather for 1 city
@@ -104,35 +86,6 @@ get('/NYT/add_search') do #form to add new search words
  erb(:NYTimes_new_search_term)
 end 
 
-
-def retrieve_NYT(search_term)
-	#quering NYTimes API
-	response = HTTParty.get("http://api.nytimes.com/svc/search/v2/articlesearch.json?q=#{search_term}&sort=newest&api-key=a96b439050b304551ed93ba9a87f929c:1:69763820")
-	#creating search results with NYTimes JSON (if statement to handel empty ["multimedia"] hash)
-	search = NytimesSearch.find_by(search_term: search_term)
-	response["response"]["docs"].each do |a|
-		if a['multimedia'] == []
-			NytimesResponse.create({
-				nytimes_searches_id: search.id, 
-				web_url: a["web_url"],
-				snippet: a["snippet"],
-				image: "http://img.talkandroid.com/uploads/2011/03/nytimes-icon.jpg",
-				pub_date: a["pub_date"],
-				headline: a["headline"]["main"]
-				})
-		else
-			NytimesResponse.create({
-				nytimes_searches_id: search.id, 
-				web_url: a["web_url"],
-				snippet: a["snippet"],
-				image: "https://www.nytimes.com/#{a['multimedia'][0]['url']}",
-				pub_date: a["pub_date"],
-				headline: a["headline"]["main"]
-				})
-		end
-	end 
-end 
-
 post('/NYT') do  # queries NYTimes API with new search terms
 	search_term = params["search_term"].tr(" ", "+")
 	retrieve_NYT(search_term)
@@ -175,7 +128,7 @@ end
 #TWITTER ROUTES
 
 get('/twitter') do #displays all twitter results
-	erb(:twitter)
+	erb(:twitter, {locals: { twitter: TwitterResponse.all }})
 end 
 
 get('/twitter/add_search') do # form to add new twitter searches
@@ -184,27 +137,44 @@ get('/twitter/add_search') do # form to add new twitter searches
 end 
 
 post('/twitter') do 
-	client = Twitter::REST::Client.new do |config|
-	  config.consumer_key = "YuXQGZhXW5HVPyPyR430qQGeZ"
-	  config.consumer_secret = "c4hpTZbFOpuachYZIqSznJdQVa46jOm3SwnuuV8xztRdwJIxB2"
-	  config.access_token = "280633349-Cl1pvueTkyCaHBueOVjRF9nZxX4MTnoodQRWuuXI"
-	  config.access_token_secret = "7B10uDNzeTQFZ8UpY8HQfX8eEyqY3xbtAOnC8eSfTlszA"
-	end	
+binding.pry
+	configure_twitter
 
 	search_term = params["search_term"]
 	TwitterSearch.create({search_term: search_term})
 
-	twitter_response = client.search("#{search_term}", :result_type => "recent").take(10)
+	twitter_response = client.search("#{search_term}", :result_type => "recent", :lang => "en").take(10)
+	#to go beyond MVP, handle media & hashtags
 
 	twitter_response.each do |a|
 		TwitterResponse.create({
 		created_at: a.created_at, 
 		full_text: a.full_text, 
-		user: a.user.screen_name,
-		})
+		screen_name: a.user.screen_name,
+		});
+	end 
+	redirect('/twitter')
+end
+
+post("/follow/twitter") do 
+	client = Twitter::REST::Client.new do |config|
+		  config.consumer_key = "YuXQGZhXW5HVPyPyR430qQGeZ"
+		  config.consumer_secret = "c4hpTZbFOpuachYZIqSznJdQVa46jOm3SwnuuV8xztRdwJIxB2"
+		  config.access_token = "280633349-Cl1pvueTkyCaHBueOVjRF9nZxX4MTnoodQRWuuXI"
+		  config.access_token_secret = "7B10uDNzeTQFZ8UpY8HQfX8eEyqY3xbtAOnC8eSfTlszA"
+	end	
+
+	username = params["handle"]
+	TwitterUserSearch.create({follow_user: username})
+	#need to make twitter_user_searches & responses tables
+	twitter_response = client.user("#{username}")
+	
+	TwitterUserResponse.create({
+		tweet: twitter_response.tweet.full_text,
+		unparsed_url: twitter_response.tweet.url,
+
+
+	})
 end 
-
-
-
-
+#delete and update routes, twitter/:id, all erb files, displaying info on main twitter page. 
 

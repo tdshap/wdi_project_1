@@ -5,6 +5,12 @@
 <body>
 <h1>View your twitter posts</h1>
 
+<% twitter.each do |a| %>
+<div class="twitter">
+<%= a["screen_name"] %>: <%= a["full_text"] %>
+</div>
+<% end %>
+
 
 <a href="/twitter/add_search">Add Twitter Search</a>
 </body>

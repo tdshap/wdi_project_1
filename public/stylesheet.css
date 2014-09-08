@@ -1,0 +1,70 @@
+@import url(http://fonts.googleapis.com/css?family=Shadows+Into+Light|Shadows+Into+Light+Two);
+
+body {
+  background-image: url(http://www.zingerbugimages.com/backgrounds/wrinkled_white_paper_background_1800x1600.jpg);
+  font-family: 'Shadows Into Light Two';
+}
+div {
+  margin: 0 auto;
+  background-size: cover;
+  position:relative;
+  border-radius: 3px;
+  }
+  .current_conditions{
+  	float: left;
+  	display: block;
+  }
+  .ten_day{
+  	height: 100px;
+  	width: 200px;
+  	/*background-image: url(http://ingatan.info/wp-content/uploads/2014/08/sky-blue-background-color-code.jpg);*/
+  	border: solid;
+  	display: inline-block;
+  	font-size: 10px;
+  	margin-left: auto;
+  }
+  .header{
+  	background-color: rgba(0, 0, 0, 0.5);
+
+		margin-left: auto;
+  }
+  .link{
+  	display: inline;
+
+  }
+  .articles{
+  	height: 300px;
+  	width: 400px;
+  	float: left;
+  	border: solid;
+  	padding: (10px, 10px, 10px, 10px);
+  }
+p{
+
+}
+
+h3{
+	text-align: center;
+
+
+
+}
+a:link{
+
+text-decoration: none;
+
+
+}
+a:visited{
+text-decoration: none;
+
+
+}
+a:hover{
+
+
+}
+
+a:active{
+
+}

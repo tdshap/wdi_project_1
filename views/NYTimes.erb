@@ -1,29 +1,30 @@
 <html>
-<head>
-	<title>New York Times</title>
-</head>
-<body>
+	<head>
+		<title>New York Times</title>
+		<link rel="stylesheet" type="text/css" href="stylesheet.css">
+	</head>
+	
+	<body>
 
-<h1>Your NYTimes Articles</h1>
-<p>
-<% news.each do |a| %>
-<h3><%= a["headline"] %></h3><br>
+		<h1>Your NYTimes Articles</h1>
+			<% news.each do |a| %>
+				<div class="articles">
+					<b><a href="<%= a['web_url']%>"><%= a["headline"] %></a></b>
+					<br>
+					<%= a["snippet"] %>
+					<br>
+					<img src="<%= a['image'] %>">
+					<br>
+					<a href="/NYT/<%=a["id"]%>">See more here</a>
+					<br>
+				</div>
+			<% end %>
 
-<img src="<%= a['image'] %>">
-<%= a["snippet"] %><br>
-<a href="/NYT/<%=a["id"]%>">See more here</a>
-<a href="<%= a['web_url']%>">Read full article</a><br>
-<% end %>
-</p>
+		<div class="links">
+			<a href="/NYT/add_search">Add NYTimes Search</a>
+			<a href="/edit/NYT">Edit NYTimes preferences</a>
+			<a href="/refresh/NYT">Refresh NYTimes Posts</a>
+		</div>
 
-
-
-
-<div class="links">
-<a href="/NYT/add_search">Add NYTimes Search</a>
-<a href="/edit/NYT">Edit NYTimes preferences</a>
-<a href="/refresh/NYT">Refresh NYTimes Posts</a>
-</div>
-
-</body>
+	</body>
 </html>

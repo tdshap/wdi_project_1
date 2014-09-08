@@ -1,24 +1,42 @@
 <html>
 <head>
 	<title>Your Weather</title>
+	<link rel="stylesheet" type="text/css" href="stylesheet.css">
 </head>
 <body>
 	<h2>Current Weather Conditions</h2>
-<% weather.each do |a| %>
-Weather for <b><%= a["city"].tr("_", " ") %>, <%= a["state"]%></b><br>
-<img src="<%= a['icon_url']%>"><br>
-<%= a["temp_f"] %> F. Feels like <%= a["feelslike_f"] %> F<br>
-<%= a["weather"] %><br>
-<a href="weather/<%= a["id"] %>">See more</a>
-<br><br>
-<% end %>
-
-<br>
 <div class="links">
 <a href="/weather/add_location">Add Weather Location</a>
 <a href="/edit/weather">Edit weather preferences</a>
 <a href="/refresh/weather">Refresh weather</a>
 </div>
+
+<div class="current_conditions">
+<% weather.each do |a| %>
+	
+		Weather for <b><%= a["city"].tr("_", " ") %>, <%= a["state"]%></b><br>
+		<img src="<%= a['icon_url']%>"><br>
+		<%= a["temp_f"] %> F. Feels like <%= a["feelslike_f"] %> F<br>
+		<%= a["weather"] %><br>
+	<a href="weather/<%= a["id"] %>">See more</a>
+
+<br><br>
+<% end %>
+</div>
+
+
+<h3>Ten Day Forecast</h3>
+<% ten_day.each do |a| %>
+	<div class="ten_day">
+		<img src="<%= a["image"] %>">
+		<%= a["day"] %>:
+		<p><%= a["forecast"] %></p>
+	</div>
+<% end %>
+
+
+<br>
+
 
 </body>
 </html>

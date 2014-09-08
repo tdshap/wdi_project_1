@@ -1,13 +1,26 @@
 <html>
-<head>
-	<title></title>
-</head>
-<body>
-	Enter Keywords you want to use to search the NYTimes Database
-	<form method="POST" action="/NYT">
-		<input type="text" name="search_term">
-		<button>Add Search</button>
-	</form>
+	<head>
+		<title></title>
+	</head>
 
-</body>
+	<body>
+	Enter Keywords you want to use to search the NYTimes Database
+		<form method="POST" action="/NYT">
+			<input type="text" name="search_term">
+			<button>Add Search</button>
+		</form>
+
+	NYTimes Event Listings 
+		<form method="POST" action="/events/NYT">
+			Select Borough
+			<select>
+				<option value="Manhattan">Manhattan</option>
+				<option value="Brooklyn">Brooklyn</option>
+				<option value="Queens">Queens</option>
+				<option value="Bronx">Bronx</option>
+				<option value='"Staten Island"'>Staten Island</option>
+			</select><button>Add Borough</button>
+		</form>
+
+	</body>
 </html>
