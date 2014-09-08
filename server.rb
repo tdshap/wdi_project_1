@@ -82,7 +82,7 @@ get('/refresh/weather') do #deletes and re-creates WeatherConditionResponse usin
 		state = a["state"]
 		retrieve_10day_forecast(city, state)
 	end 
-	
+
 	redirect('/weather')
 end 
 
@@ -114,6 +114,22 @@ get("/NYT/:id") do # individual article page
 	article = NytimesResponse.find_by(id: params["id"])
 	erb(:NYT_post, {locals: { article: article }})
 end 
+
+post("/save/NYT") do 
+	saved_article = NytimesResponse.find_by(id: params["id"])
+	SavedSearch.create({
+		nytimes_searches_id: saved_article["nytimes_searches_id"],
+		web_url: saved_article["web_url"],
+		snippet: saved_article["snippet"],
+		image: saved_article["image"],
+		pub_date: saved_article["pub_date"],
+		headline: saved_article["headline"]
+	})
+	erb(:saved_searches, {locals: { article: SavedSearch.all }})
+end 
+get ("/save/NYT") do 
+	erb(:saved_searches, {locals: { article: SavedSearch.all }})
+end 	
 
 get('/edit/NYT') do # edit search preferences
 	erb(:NYTimes_preferences, {locals: { terms: NytimesSearch.all }})

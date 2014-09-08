@@ -1,0 +1,18 @@
+<html>
+<head>
+	<title>Your Saved Articles</title>
+</head>
+<body>
+<h1>Your Saved NYTimes Articles</h1>
+	<% article.each do |a| %>
+		<div class="articles">
+			<b><a href="<%= a['web_url']%>"><%= a["headline"] %></a></b>
+			<br>
+			<%= a["snippet"] %>
+			<br>
+			<img src="<%= a['image'] %>">
+			<br>
+		</div>
+	<% end %>
+</body>
+</html>

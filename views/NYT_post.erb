@@ -9,6 +9,11 @@
 <img src="<%= article['image'] %>">
 <%= article["snippet"] %><br>
 <a href="<%= article['web_url']%>">Read full article</a><br>
+
+<form method="POST" action="/save/NYT">
+	<input type="hidden" name="id" value="<%= article.id %>">
+	<button>Save Article</button>
+</form>
 </p>
 
 

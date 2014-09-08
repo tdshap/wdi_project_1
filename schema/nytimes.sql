@@ -11,8 +11,8 @@ CREATE TABLE nytimes_responses(
 	nytimes_searches_id integer, 
 	web_url varchar(255), 
 	snippet varchar(255),
-	#image varchar(255),
+	image varchar(255),
 	pub_date varchar(255),
 	headline varchar(255),
-	id serial primary id, 
+	id serial primary key, 
 	);

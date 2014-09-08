@@ -19,11 +19,8 @@ end
 class NytimesResponse <ActiveRecord::Base
 end 
 
-# class NytimesEventsSearch < ActiveRecord::Base
-# end 
-
-# class NytimesEventsResponse <ActiveRecord::Base
-# end 
+class SavedSearch <ActiveRecord::Base
+end 
 
 
 class TwitterSearch < ActiveRecord::Base
