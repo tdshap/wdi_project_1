@@ -5,26 +5,26 @@
 	</head>
 	
 	<body>
-
+	<header>
 		<h1>Your NYTimes Articles</h1>
-			<% news.each do |a| %>
-				<div class="articles">
-					<b><a href="<%= a['web_url']%>"><%= a["headline"] %></a></b>
-					<br>
-					<%= a["snippet"] %>
-					<br>
-					<img src="<%= a['image'] %>">
-					<br>
-					<a href="/NYT/<%=a["id"]%>">See more here</a>
-					<br>
-				</div>
-			<% end %>
-
-		<div class="links">
+			<div class="link">
 			<a href="/NYT/add_search">Add NYTimes Search</a>
 			<a href="/edit/NYT">Edit NYTimes preferences</a>
 			<a href="/refresh/NYT">Refresh NYTimes Posts</a>
+		</div><br>
+	</header>
+
+	<% news.each do |a| %>
+		<div class="NYTimes_feed">
+			<img src="<%= a['image'] %>"><br>
+			<b><a href="<%= a['web_url']%>"><%= a["headline"] %></a></b><br>
+			<%= a["snippet"] %><br>
+			<a href="/NYT/<%=a["id"]%>">Save Article</a>
+			<br>
 		</div>
+	<% end %>
+
+
 
 	</body>
 </html>

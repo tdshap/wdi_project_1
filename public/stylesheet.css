@@ -1,89 +1,64 @@
-@import url(http://fonts.googleapis.com/css?family=Shadows+Into+Light|Shadows+Into+Light+Two);
-
+@import url(http://fonts.googleapis.com/css?family=Lato);
 body {
   background-image: url(http://www.zingerbugimages.com/backgrounds/wrinkled_white_paper_background_1800x1600.jpg);
-  font-family: 'Shadows Into Light Two';
+  font-family: 'Lato';
+  max-width:1050px;
+  overflow: scroll;
 }
-div {
-  margin: 0 auto;
-  background-size: cover;
-  position:relative;
-  border-radius: 3px;
-  }
-  .current_conditions{
-  	float: left;
-  	display: block;
-  }
-  .ten_day{
-  	height: 100px;
-  	width: 200px;
-  	/*background-image: url(http://ingatan.info/wp-content/uploads/2014/08/sky-blue-background-color-code.jpg);*/
-  	border: solid;
-  	display: inline-block;
-  	font-size: 10px;
-  	margin-left: auto;
-  }
-  .header{
-  	background-color: rgba(0, 0, 0, 0.5);
+header{
+ background-color: rgba(114, 93, 62, 0.3);
+ max-width:1050px;
 
-		margin-left: auto;
-  }
-  .link{
-  	display: inline;
-
-  }
-  .articles{
-  	height: 300px;
-  	width: 400px;
-  	float: left;
-  	border: solid;
-  	padding: (10px, 10px, 10px, 10px);
-  }
-  .twitter{
-    word-wrap: break-word;
-    height: auto;
-    width: 200px;
-    border: solid;
-    display: inline-block;
-    
-
-
-
-
-  }
-  .NYTimes_feed{
-
-
-
-
-    
-  }
-p{
-  color: #7766E3;
+}
+div{
+	position: relative;
+	overflow: scroll;
+}
+.links{
+	display: inline;
+	margin: auto;
 }
 
-h3{
+.weather{
+	display: inline-block;
+	text-align: left;
+
+}
+.news_container{
+	width: 1050px;
+	height: 700px;
+
+}
+.NYTimes_feed{
+	display: inline-block;
 	text-align: center;
-
-
+	width: 200px;
+	height: 350px;
+	border-style: solid;
+	border-radius: 10px;
+	background-color: rgba(139, 114, 89, 0.5)
+}
+.twitter_index{
+	width: 1050;
+	height: 700px;
+}
+.twitter{
+	border-bottom: outset;
 
 }
-a:link{
-
-text-decoration: none;
-
-
+.ten{
+	border: solid;
+	background-color: rgba(188, 181, 175, 0.3);
+	display: inline-block;
+	height: 150px;
+	width: 400px;
+	
 }
-a:visited{
-text-decoration: none;
-
-
-}
-a:hover{
-
+.divider{
+	
 
 }
 
-a:active{
-
+li{
+	display: inline;
 }

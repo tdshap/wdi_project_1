@@ -45,7 +45,8 @@ end
 
 get("/weather/:id") do #displays weather for 1 city
 	city_weather = WeatherConditionResponse.find_by(id: params["id"])
-	erb(:weather_post, {locals: {weather: city_weather}})
+	ten_day = Weather10dayResponse.where(weather_condition_searches_id: city_weather.weather_condition_searches_id)
+	erb(:weather_post, {locals: {weather: city_weather, ten_day: ten_day }})
 end 
 
 get("/edit/weather") do #form to edit and delete searches
@@ -81,12 +82,11 @@ get('/refresh/weather') do #deletes and re-creates WeatherConditionResponse usin
 		city = a["city"]
 		state = a["state"]
 		retrieve_10day_forecast(city, state)
-	end 
-
+	end
 	redirect('/weather')
 end 
 
-post('/tag/weather') do
+post('/tag/weather') do # Adds a tag to instance in WeatherConditionResponse
 	post_tag = WeatherConditionResponse.find_by({id: params["id"]})
 	new_tag = params["tag"]
 	post_tag.update({tags: new_tag})
@@ -110,12 +110,7 @@ post('/NYT') do  # queries NYTimes API with new search terms
 	redirect ("/NYT")
 end 
 
-get("/NYT/:id") do # individual article page
-	article = NytimesResponse.find_by(id: params["id"])
-	erb(:NYT_post, {locals: { article: article }})
-end 
-
-post("/save/NYT") do 
+get("/NYT/:id") do # saves article and directs to individual article page
 	saved_article = NytimesResponse.find_by(id: params["id"])
 	SavedSearch.create({
 		nytimes_searches_id: saved_article["nytimes_searches_id"],
@@ -125,9 +120,10 @@ post("/save/NYT") do
 		pub_date: saved_article["pub_date"],
 		headline: saved_article["headline"]
 	})
-	erb(:saved_searches, {locals: { article: SavedSearch.all }})
+	erb(:NYT_post, {locals: { article: saved_article }})
 end 
-get ("/save/NYT") do 
+
+get ("/save/NYT") do # View all saved searches (no way to edit or delete through website..yet)
 	erb(:saved_searches, {locals: { article: SavedSearch.all }})
 end 	
 
@@ -195,17 +191,13 @@ post('/twitter') do #queries twitter API
 	end 
 	redirect('/twitter')
 end
-#delete and update routes, twitter/:id, all erb files, displaying info on main twitter page. 
 
 
-get("/edit/twitter") do 
+get("/edit/twitter") do # form to edit & delete twitter search and add tag to TwitterResponse instance 
 	erb(:twitter_preferences, {locals: { search: TwitterSearch.all, response: TwitterResponse.all }})
 end 
 
-
-
 post('/tag/twitter') do #create tag for post
-
 	post_tag = TwitterResponse.find_by({id: params["id"]})
 	new_tag = params["tag"]
 	post_tag.update({tag: new_tag})
@@ -216,20 +208,15 @@ put("/search/twitter") do #edit search term
 	new_search = TwitterSearch.find_by(id: params["old_search"])
 	new_search.update(search_term: params["new_search"])
 	redirect("/refresh/twitter")
-
 end 
 
-
 delete("/search/twitter") do #delete search term
-
 	delete_search = TwitterSearch.find_by(id: params["search_term"])
 	delete_search.destroy
 	redirect ('/refresh/twitter') #eventually refresh/twitter
-
 end 
 
-
-get('/refresh/twitter') do 
+get('/refresh/twitter') do #deletes TwitterResponse instances and re-queries Twitter API based on TwitterSearch instances
 	client = Twitter::REST::Client.new do |config|
 		  config.consumer_key = "YuXQGZhXW5HVPyPyR430qQGeZ"
 		  config.consumer_secret = "c4hpTZbFOpuachYZIqSznJdQVa46jOm3SwnuuV8xztRdwJIxB2"

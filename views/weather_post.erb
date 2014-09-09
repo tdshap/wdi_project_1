@@ -1,14 +1,27 @@
 <html>
 <head>
-	<title>Weather</title>
+	<title>Weather for <%= weather["city"]%></title>
+	<link rel="stylesheet" type="text/css" href="/stylesheet.css">
 </head>
 <body>
+<div class="current_conditions">
+	Weather for <b><%= weather["city"].tr("_", " ") %>, <%= weather["state"]%></b><br>
+	<img src="<%= weather['icon_url']%>"><br>
+	<%= weather["weather"] %><br>
+	<%= weather["temp_f"] %> F. Feels like <%= weather["feelslike_f"] %> F<br>
+</div>
 
-Weather for <b><%= weather["city"].tr("_", " ") %>, <%= weather["state"]%></b><br>
-<img src="<%= weather['icon_url']%>"><br>
-<%= weather["temp_f"] %> F. Feels like <%= weather["feelslike_f"] %> F<br>
-<%= weather["weather"] %><br>
+<div class="divider">
+<h3>Five Day Forecast</h3>
 
+<% ten_day.take(10).each do |a| %>
+	<div class="ten">
+		<img src="<%= a["image"] %>"><br>
+		<%= a["day"] %>:
+		<p><%= a["forecast"] %></p>
+	</div>
+<% end %>
+</div>
 
 
 </body>

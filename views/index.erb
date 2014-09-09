@@ -4,50 +4,46 @@
 	<link rel="stylesheet" type="text/css" href="stylesheet.css">
 </head>
 <body>
-	<h1> Welcome to your Dashboard</h1>
-	<div class="header">
-		<div class="link"><a href="/weather">Weather</a></div>
-		<div class="link"><a href="/NYT">NYTimes</a></div>
-		<div class="link"><a href="/twitter">Twitter</a></div>
-	</div>
-			
-			<br><br>
-		<h1>View your twitter posts</h1>
-
-		<% twitter.take(10).each do |a| %>
-		<div class="twitter">
-			<b><%= a["screen_name"] %></b>: <p><%= a["full_text"] %><p>
+	<header>
+	<h1> Welcome to your Dashboard</h1><br>
+	
+		<div class="links">
+			<li><a href="/weather">Weather</a></li>
+			<li><a href="/NYT">NYTimes</a></li>
+			<li><a href="/twitter">Twitter</a></li>
 		</div>
+	</header>
+	<br>
+		<% weather.take(10).each do |a| %>
+			<div class="weather">
+				<a href="weather/<%= a["id"] %>"><%= a["city"].tr("_", " ") %>, <%= a["state"]%></a><br>
+				<img src="<%= a['icon_url']%>"><br>
+				<%= a["weather"] %><br>
+				<%= a["temp_f"] %> F. Feels like <%= a["feelslike_f"] %> F<br>
+			</div>
 		<% end %>
+		<br>
 	
-	<h1>Your NYTimes Articles</h1>
-	<div class="NYTimes_feed"
-	<% news.take(10).each do |a| %>
-		<div class="articles">
-			<b><a href="<%= a['web_url']%>"><%= a["headline"] %></a></b>
-			<br>
-			<%= a["snippet"] %>
-			<br>
-			<img src="<%= a['image'] %>">
-			<br>
-			<a href="/NYT/<%=a["id"]%>">See more here</a>
-			<br>
-		</div>
-	<% end %>
+		<h1><a href="/NYT">Your NYTimes Articles</a></h1>
+		<div class="news_container">
+		<% news.take(10).each do |a| %>
+			<div class="NYTimes_feed">
+				<img src="<%= a['image'] %>"><br>
+				<b><a href="<%= a['web_url']%>"><%= a["headline"] %></a></b><br>
+				<%= a["snippet"] %><br>
+				<a href="/NYT/<%=a["id"]%>">Save Article</a><br>
+			</div>
+		<% end %>
 	</div>
 
-
-<div class="current_conditions">
-<% weather.take(10).each do |a| %>
-	
-		Weather for <b><%= a["city"].tr("_", " ") %>, <%= a["state"]%></b><br>
-		<img src="<%= a['icon_url']%>"><br>
-		<%= a["temp_f"] %> F. Feels like <%= a["feelslike_f"] %> F<br>
-		<%= a["weather"] %><br>
-	<a href="weather/<%= a["id"] %>">See more</a>
-
-<br><br>
-<% end %>
-</body>
+	<h1><a href="/twitter">View your twitter posts</a></h1>
+		<div class="twitter_index">
+			<% twitter.take(10).each do |a| %>
+				<div class="twitter">
+					<b><%= a["screen_name"] %></b>: <br><p><%= a["full_text"] %><p>
+				</div>
+			<% end %>
+		</div>
+	</body>
 </html>
 
